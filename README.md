@@ -165,7 +165,7 @@ The `data/` directory, which holds the SQLite database, is created automatically
 ## Notes
 
 - **Only one machine should run the pipeline** on a shared Drive folder. Each machine maintains its own database: running two pipelines concurrently would process every PDF twice.
-- **Scanned PDFs**, lacking a text layer, are rejected with an explicit error. A failing PDF does not block other PDFs or prevent the HTML page from updating.
+- **Scanned PDFs**, lacking a text layer, are rejected with an explicit error. A failing PDF does not prevent the HTML page from updating, but it blocks the other new PDFs of the same run: remove it from the `papers` folder.
 - **To reprocess everything**, delete `data/papers.db`: all PDFs will be treated as new on the next run.
 
 ## Authors
