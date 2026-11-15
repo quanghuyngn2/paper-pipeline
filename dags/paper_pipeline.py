@@ -56,10 +56,9 @@ with DAG(
         save_paper(paper["filename"], paper["metadata"])
         return paper
 
-    @task
-    def generate_html(papers: list[dict]) -> None:
-        if papers:
-            render_html(str(_project_path(OUTPUT_DIR) / "index.html"))
+    @task(trigger_rule="all_done")
+    def generate_html() -> None:
+        render_html(str(_project_path(OUTPUT_DIR) / "index.html"))
 
     @task
     def notify_discord(paper: dict) -> None:
@@ -69,7 +68,7 @@ with DAG(
     converted = convert_pdf.expand(pdf_path=detected)
     analyzed = analyze_llm.expand(paper=converted)
     stored = store_sqlite.expand(paper=analyzed)
-    html = generate_html(stored)
+    html = generate_html()
     notification = notify_discord.expand(paper=stored)
 
     stored >> [html, notification]
